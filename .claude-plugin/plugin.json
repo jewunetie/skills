@@ -1,0 +1,22 @@
+{
+    "name": "skills",
+    "description": "A personal collection of specialized Claude Code skills covering research, reasoning, writing, design, and development workflows",
+    "version": "1.0.0",
+    "author": {
+        "name": "jewunetie",
+        "email": "nganha.jewun@gmail.com"
+    },
+    "homepage": "https://github.com/jewunetie/skills",
+    "repository": "https://github.com/jewunetie/skills",
+    "license": "MIT",
+    "keywords": [
+        "skills",
+        "research",
+        "osint",
+        "reasoning",
+        "ai-design",
+        "writing",
+        "pdf",
+        "youtube"
+    ]
+}

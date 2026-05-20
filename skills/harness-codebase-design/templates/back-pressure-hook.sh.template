@@ -1,0 +1,180 @@
+# Back-pressure verification hook template
+
+> A starter hook that runs on session stop (or whenever the agent thinks it is finishing). Runs typecheck and lint. Silent on success, verbose on failure. Exit code 2 tells the harness to re-engage the agent so it fixes the errors before declaring done.
+>
+> Adapt commands to the project's stack. The pattern is what matters: success silent, failure verbose, errors injected back into the agent's loop.
+
+---
+
+## For Claude Code (`.claude/hooks/stop.sh`)
+
+```bash
+#!/usr/bin/env bash
+# Verification hook: runs on session stop.
+# Silent on success; on failure, surfaces errors and triggers a re-engage.
+#
+# Exit codes:
+#   0 = all checks passed; agent stops cleanly
+#   2 = checks failed; harness re-engages the agent with the error output
+
+set -uo pipefail
+cd "$CLAUDE_PROJECT_DIR" || exit 1
+
+# Capture all output. Display only on failure.
+OUTPUT=$(
+  {
+    echo "=== Typecheck ==="
+    [PROJECT_TYPECHECK_COMMAND] 2>&1
+    TYPECHECK_EXIT=$?
+
+    echo ""
+    echo "=== Lint ==="
+    [PROJECT_LINT_COMMAND] 2>&1
+    LINT_EXIT=$?
+
+    echo ""
+    echo "=== Format check ==="
+    [PROJECT_FORMAT_CHECK_COMMAND] 2>&1
+    FORMAT_EXIT=$?
+
+    # Aggregate exit code
+    if [ $TYPECHECK_EXIT -ne 0 ] || [ $LINT_EXIT -ne 0 ] || [ $FORMAT_EXIT -ne 0 ]; then
+      exit 1
+    fi
+  } 2>&1
+)
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -eq 0 ]; then
+  # Silent success. Agent stops cleanly.
+  exit 0
+else
+  # Verbose failure. Output goes back to the agent's context.
+  echo "$OUTPUT" >&2
+  exit 2
+fi
+```
+
+## Replacements to make
+
+Replace these tokens with project-specific commands:
+
+- `[PROJECT_TYPECHECK_COMMAND]`: e.g., `tsc --noEmit`, `mypy .`, `cargo check`, `go vet ./...`
+- `[PROJECT_LINT_COMMAND]`: e.g., `eslint .`, `ruff check .`, `golangci-lint run`
+- `[PROJECT_FORMAT_CHECK_COMMAND]`: e.g., `prettier --check .`, `black --check .`, `gofmt -l .`
+
+## Variant: with autofix
+
+A common pattern is to run autofixes first, then check. This avoids the agent fixing trivial whitespace issues.
+
+```bash
+# Run autofix first
+[PROJECT_FORMAT_FIX_COMMAND] > /dev/null 2>&1 || true
+[PROJECT_LINT_AUTOFIX_COMMAND] > /dev/null 2>&1 || true
+
+# Then check
+... typecheck and lint as above ...
+```
+
+For biome and similar tools that exit with code 1 if they made changes, run them twice with `||` so the second pass catches genuine errors:
+
+```bash
+biome check . --write --unsafe || biome check . --write --unsafe
+```
+
+The first pass writes fixes (and may exit 1). The second pass should be a no-op if everything was fixable; if it still exits 1, there are unfixable errors.
+
+## Variant: with pre-build steps
+
+If your typecheck depends on generated files or built dependencies, do those first. Fail fast if pre-build fails.
+
+```bash
+# Pre-build: generate types, build internal SDK packages
+PREBUILD_OUTPUT=$(
+  [PROJECT_GENERATE_TYPES_COMMAND] && \
+  [PROJECT_BUILD_DEPENDENCIES_COMMAND] && \
+  [PROJECT_INSTALL_COMMAND] 2>&1
+)
+if [ $? -ne 0 ]; then
+  echo "prebuild failed:" >&2
+  echo "$PREBUILD_OUTPUT" >&2
+  exit 2
+fi
+
+# Run typecheck and lint in parallel for speed
+OUTPUT=$([PROJECT_TYPECHECK_COMMAND] 2>&1 & [PROJECT_LINT_COMMAND] 2>&1 & wait)
+if [ $? -ne 0 ]; then
+  echo "$OUTPUT" >&2
+  exit 2
+fi
+```
+
+## Variant: with selective tests
+
+Running the full test suite on stop is too slow at agent throughput. Run only tests relevant to the change.
+
+```bash
+# Find files changed in this session (relative to last commit)
+CHANGED_FILES=$(git diff --name-only HEAD)
+
+if [ -n "$CHANGED_FILES" ]; then
+  # Map changed files to relevant tests. Tools vary by language.
+  # Jest: jest --findRelatedTests
+  # Pytest with testmon: pytest --testmon
+  # Go: go test -run on packages containing changes
+  RELEVANT_TESTS=$(echo "$CHANGED_FILES" | xargs [PROJECT_TEST_SELECTION_COMMAND])
+
+  if [ -n "$RELEVANT_TESTS" ]; then
+    TEST_OUTPUT=$([PROJECT_TEST_COMMAND] $RELEVANT_TESTS 2>&1)
+    if [ $? -ne 0 ]; then
+      echo "$TEST_OUTPUT" >&2
+      exit 2
+    fi
+  fi
+fi
+```
+
+## Helper: silent-success pattern as a reusable function
+
+For multi-step checks, this helper applies the silent-success pattern uniformly:
+
+```bash
+run_silent() {
+  local label="$1"
+  shift
+  local output
+  output=$("$@" 2>&1)
+  if [ $? -eq 0 ]; then
+    echo "✓ $label" >&1
+  else
+    echo "✗ $label" >&2
+    echo "$output" >&2
+    return 1
+  fi
+}
+
+# Usage:
+run_silent "typecheck" tsc --noEmit || EXIT=2
+run_silent "lint" eslint . || EXIT=2
+run_silent "tests" jest --bail || EXIT=2
+
+exit "${EXIT:-0}"
+```
+
+## Why these patterns
+
+- **Silent success**: a passing check contributes one line ("✓ typecheck") to the agent's context. Without this, every passing run dumps verbose tool output that competes with the actual task. Over a long session, the context bloats with check noise and the agent's reasoning degrades.
+
+- **Verbose failure**: when something fails, the agent needs the full error to fix it. No truncation, no summary. The full stack trace and diagnostic messages get injected back.
+
+- **Exit code 2**: in Claude Code, exit code 2 from a stop hook tells the harness to re-engage the agent with the hook output. The agent fixes the errors before stopping. Other harnesses use different conventions; check yours.
+
+- **Fail fast**: when one stage fails, do not run later stages. Reduces noise. The agent fixes the first thing, runs again, picks up the next.
+
+## Common pitfalls
+
+- **Forgetting to redirect stderr**: many tools print to stderr by default. Without `2>&1`, errors are lost.
+- **Forgetting to exit 2**: exit code 1 stops the agent without re-engaging in some harnesses. Exit 2 is the convention for "fix this and continue."
+- **Putting everything in one big check**: failures are hard to localize. Break into named stages.
+- **Running everything every time**: typecheck, lint, format, tests, smoke test on every stop is too slow. Run the cheap ones every time; run expensive ones only when relevant files changed.
+- **Not testing the hook**: write the hook, intentionally introduce a typecheck error, run the agent, watch the loop. If the agent does not get the error back, the hook is broken.

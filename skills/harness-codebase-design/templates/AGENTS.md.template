@@ -1,0 +1,73 @@
+# AGENTS.md template
+
+> This is a starter template. Replace the bracketed placeholders, delete sections that do not apply, and keep the total length under 100 lines (often under 60). Every rule should trace to a real failure or a hard constraint. If you cannot defend a line, delete it.
+
+```markdown
+# Agent guide
+
+## Build and test
+- Build: `[exact command]`
+- Run tests: `[exact command]`
+- Run a single test: `[exact command]`
+- Lint: `[exact command]`
+- Typecheck: `[exact command]`
+- Format: `[exact command]`
+
+## Hard constraints
+- Do not edit or remove tests. It is unacceptable to remove or skip a test because the work is harder than expected.
+- Do not edit lint configuration to make CI pass.
+- Do not modify files in `[path/to/legacy]` without asking the user.
+- Do not run database migrations. Ask the user to run them.
+- Do not commit secrets. Use `[env var pattern]` for credentials.
+- [Project-specific hard constraints, one per line, each tracing to a real past failure]
+
+## Layer rules
+- Code can only depend "forward" through layers: `[Types] -> [Config] -> [Repo] -> [Service] -> [Runtime] -> [UI]`.
+- Cross-cutting concerns (auth, logging, telemetry, feature flags) enter through `Providers/` only.
+- Custom lint enforces this. See `docs/architecture/dependency-rules.md`.
+
+## Conventions
+- Logging: use the project logger. No `console.log` or `print` in non-test code.
+- Errors: never silently swallow. Log or re-throw.
+- HTTP: use the project HTTP client. Never raw `fetch` or `requests`.
+- Time: use the project clock abstraction.
+- IDs: `snake_case` in storage, `camelCase` in API responses.
+
+## When you are stuck
+- Read `docs/design-docs/index.md` for architectural decisions.
+- Read `docs/exec-plans/active/` for in-flight work.
+- Read `docs/QUALITY_SCORE.md` for known gaps in each domain.
+- Search the project utility package before writing a new helper. New helpers go in the utility package, not inline.
+
+## Session startup ritual (long-running work only)
+1. `pwd`
+2. Read `progress.md`
+3. Read `feature_list.json`
+4. `git log --oneline -20`
+5. `./init.sh`
+6. Run a basic smoke test
+7. Only then start new work.
+
+## Pointers
+- Architecture map: `ARCHITECTURE.md`
+- Design decisions: `docs/design-docs/`
+- Active execution plans: `docs/exec-plans/active/`
+- Vendored library docs: `docs/references/`
+- Product specs: `docs/product-specs/`
+- Quality grades per domain: `docs/QUALITY_SCORE.md`
+```
+
+## Common mistakes to avoid
+
+- Do not auto-generate this file. The ETH Zurich study found LLM-generated agentfiles actively hurt resolution rates.
+- Do not include codebase overviews or directory listings. Agents discover structure on their own.
+- Do not include rules that nobody enforces.
+- Do not write tutorials. The agent is not learning the codebase from scratch.
+- Do not pad with prose. Every line competes for attention.
+
+## How to grow it
+
+- When the agent makes a new kind of mistake, add the line that prevents it.
+- When a line stops being needed (a more capable model handles the case, or the rule is now mechanically enforced by a lint), remove it.
+- When a section grows past 10 lines, consider whether it should move to a doc that AGENTS.md points to.
+- Re-review the file every couple of months. Cut anything that no longer earns its place.

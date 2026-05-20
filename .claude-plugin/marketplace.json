@@ -1,0 +1,20 @@
+{
+    "name": "jewun-skills",
+    "description": "Personal Claude Code skills marketplace for jewunetie",
+    "owner": {
+        "name": "jewunetie",
+        "email": "nganha.jewun@gmail.com"
+    },
+    "plugins": [
+        {
+            "name": "skills",
+            "description": "A personal collection of specialized Claude Code skills covering research, reasoning, writing, design, and development workflows",
+            "version": "1.0.0",
+            "source": "./",
+            "author": {
+                "name": "jewunetie",
+                "email": "nganha.jewun@gmail.com"
+            }
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+# Plan-audit configuration
+#
+# Location: .claude/plan-audit/config.yaml
+# Status: Optional. If absent, the skill uses auto-discovery defaults.
+#
+# All keys below are optional. Include only what you need.
+
+# Single plan location.
+# If set, the skill audits this file by default.
+# Overrides auto-discovery.
+plan-location: docs/specs/current.md
+
+# Multiple plans in the same project.
+# If set, the skill prompts the user to pick which plan to audit.
+# When both `plan-location` and `plans` are present, `plans` wins
+# and the picker includes the `plan-location` entry as one option.
+plans:
+  - PLAN.md
+  - .claude/plans/auth.md
+  - docs/specs/billing.md
+
+# Additional paths to block from the reconstructor subagent's reading,
+# beyond the defaults (the active plan file, the .claude/plan-audit/
+# folder, and common plan naming patterns like PLAN.md, SPEC.md,
+# DESIGN.md).
+#
+# Use this when your project has planning content in non-standard
+# locations. Glob patterns are supported.
+extra-blocklist:
+  - docs/architecture/*.md
+  - notes/internal/*.md
+  - .scratch/**

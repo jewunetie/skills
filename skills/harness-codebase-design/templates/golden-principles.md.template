@@ -1,0 +1,80 @@
+# Golden principles template
+
+> Golden principles are opinionated, mechanical rules that keep the codebase legible and consistent over time. They are different from architectural constraints (about correctness) and from taste invariants (about lint rules). They describe what the codebase wants to look like.
+>
+> A starter set is below. Pick the ones that fit. Adapt freely. The goal is three to ten principles, not thirty.
+
+---
+
+# Golden principles
+
+These principles guide how new code is written and how existing code is refactored. The scheduled cleanup agent enforces them on a regular cadence.
+
+## On reuse
+
+- **Search before writing.** Before writing a new helper function, search the project utility package. If something close exists, extend it. If nothing fits, add the new helper to the utility package, not inline.
+- **One canonical implementation per concept.** If two utilities do similar things, consolidate.
+- **No copy-paste from other files.** If you find yourself copying, the function belongs in a shared location.
+
+## On data shapes
+
+- **Validate at boundaries.** Data crossing a layer or external boundary is parsed and typed before use.
+- **Do not probe shapes "YOLO-style".** Never access `.id` on an unknown shape. Validate the shape first or use a typed SDK.
+- **Prefer typed SDKs over hand-rolled HTTP calls.** If a typed client exists for an API, use it.
+- **Trust no input.** Treat all data from external sources (HTTP, databases, files, environment) as untyped until explicitly validated.
+
+## On errors
+
+- **Never silently swallow.** Every catch logs or re-throws.
+- **Errors are specific.** "Failed to update user" beats "operation failed."
+- **Errors are actionable.** Where possible, suggest what the caller can do.
+- **Distinguish operational from programmer errors.** Operational errors (network failure, validation, business rule violation) are recoverable. Programmer errors (assertion failures, contract violations) crash loudly.
+
+## On consistency
+
+- **One way to do common things.** HTTP through the project HTTP client. Database access through the project ORM. Time through the project clock abstraction. Logging through the project logger.
+- **Naming is canonical.** A `User` is `User` everywhere. Not `Customer`, not `Account`, not `Person`.
+- **Tests follow the structure of existing tests.** Do not reinvent test helpers.
+- **File layout follows the layered architecture.** Each domain has the same shape.
+
+## On simplicity
+
+- **Prefer boring technology.** Composability, API stability, and good representation in training data matter more than novelty.
+- **Reimplement small things rather than depend on opaque libraries.** When a third-party package's behavior is hard to model or its API is unstable, a small in-repo replacement is often cheaper.
+- **Inline before abstracting.** Three repetitions before extracting a shared abstraction. Two is a coincidence; three is a pattern.
+
+## On the codebase as a whole
+
+- **No dead code.** Unused exports, commented-out blocks, and abandoned files get removed.
+- **No TODO without an issue.** Either fix it now, or open an issue and link.
+- **No file over [N] lines.** Decompose.
+- **Keep documentation in sync with code.** When behavior changes, update the doc that describes it. The doc-gardening agent will surface drift.
+
+## On tests
+
+- **Tests describe behavior, not implementation.** A test that breaks when you refactor without changing behavior is a bad test.
+- **Each test is independent.** No shared mutable state between tests.
+- **Tests are stable.** Flakes are bugs. Either fix them or quarantine them with an issue.
+- **Tests are fast enough to run on every change.** If they are not, split into "fast" and "slow" suites.
+
+---
+
+## How to use these principles
+
+The scheduled cleanup agent (see `references/09-garbage-collection.md`) scans for violations of these principles and opens targeted refactor PRs. Each PR is small and reviewable in under a minute.
+
+Agents writing new code should read this file at session start.
+
+When a principle keeps being violated despite the cleanup agent, that is a signal. Promote the principle from a doc-level rule to a custom lint or structural test (see `references/04-architectural-enforcement.md`).
+
+When a principle becomes obsolete (a more capable model handles the case, or the rule is now mechanically enforced), remove it from this file.
+
+## Adding a new principle
+
+A new principle earns its place when:
+
+- The pattern has been violated twice in two different parts of the codebase.
+- The fix is mechanical (you can write a check for it) or judgmental but consistent (a senior engineer would always make the same call).
+- The cost of enforcement is less than the cost of the drift.
+
+Brainstormed-but-unviolated principles do not earn their place. Resist the urge to fill this file with what you wish were true.
