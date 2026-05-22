@@ -1,0 +1,26 @@
+{
+    "name": "skills",
+    "version": "1.0.0",
+    "description": "A personal collection of specialized Claude Code skills covering research, reasoning, writing, design, and development workflows",
+    "homepage": "https://github.com/jewunetie/skills",
+    "repository": "https://github.com/jewunetie/skills",
+    "license": "MIT",
+    "keywords": [
+        "skills",
+        "research",
+        "osint",
+        "reasoning",
+        "ai-design",
+        "writing",
+        "pdf",
+        "youtube"
+    ],
+    "skills": "./skills/",
+    "interface": {
+        "displayName": "Jewun Skills",
+        "shortDescription": "Personal skill collection covering research, reasoning, writing, design, and development workflows",
+        "category": "Productivity",
+        "capabilities": ["Read", "Interactive"],
+        "websiteURL": "https://github.com/jewunetie/skills"
+    }
+}

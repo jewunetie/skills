@@ -4,12 +4,19 @@ A personal Claude Code plugin containing 18 specialized skills for research, rea
 
 ## Installation
 
-Register the marketplace, then install:
-
+**Claude Code:**
 ```bash
 /plugin marketplace add jewunetie/skills
 /plugin install skills@jewun-skills
 ```
+
+**OpenAI Codex:**
+```bash
+/plugin marketplace add jewunetie/skills
+/plugin install skills@jewun-skills
+```
+
+> Note: all 18 skills are fully compatible with both runtimes. The `plan-audit` bundled subagent is Claude Code-only (Codex requires TOML agent format).
 
 ## Skills
 
@@ -38,8 +45,13 @@ Register the marketplace, then install:
 
 ```
 .claude-plugin/
-  plugin.json        # Plugin manifest
-  marketplace.json   # Marketplace listing
+  plugin.json        # Claude Code plugin manifest
+  marketplace.json   # Claude Code marketplace listing
+.codex-plugin/
+  plugin.json        # Codex plugin manifest
+.agents/
+  plugins/
+    marketplace.json # Codex marketplace listing
 skills/
   <skill-name>/
     SKILL.md         # Skill definition and trigger rules

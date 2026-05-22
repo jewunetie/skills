@@ -1,0 +1,20 @@
+{
+    "name": "jewun-skills",
+    "interface": {
+        "displayName": "Jewun Skills"
+    },
+    "plugins": [
+        {
+            "name": "skills",
+            "source": {
+                "source": "local",
+                "path": "./"
+            },
+            "policy": {
+                "installation": "AVAILABLE",
+                "authentication": "NONE"
+            },
+            "category": "Productivity"
+        }
+    ]
+}
