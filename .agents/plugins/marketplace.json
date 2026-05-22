@@ -7,12 +7,12 @@
         {
             "name": "skills",
             "source": {
-                "source": "local",
-                "path": "./"
+                "source": "url",
+                "url": "https://github.com/jewunetie/skills"
             },
             "policy": {
                 "installation": "AVAILABLE",
-                "authentication": "NONE"
+                "authentication": "ON_USE"
             },
             "category": "Productivity"
         }

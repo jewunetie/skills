@@ -1,6 +1,6 @@
 # skills
 
-A personal Claude Code plugin containing 18 specialized skills for research, reasoning, writing, design, and development workflows.
+A plugin containing 18 specialized skills for research, reasoning, writing, design, and development workflows. Compatible with Claude Code and OpenAI Codex.
 
 ## Installation
 
@@ -12,11 +12,11 @@ A personal Claude Code plugin containing 18 specialized skills for research, rea
 
 **OpenAI Codex:**
 ```bash
-/plugin marketplace add jewunetie/skills
-/plugin install skills@jewun-skills
+codex plugin marketplace add jewunetie/skills
+codex plugin add skills@jewun-skills
 ```
 
-> Note: all 18 skills are fully compatible with both runtimes. The `plan-audit` bundled subagent is Claude Code-only (Codex requires TOML agent format).
+> **Compatibility note:** Skills use the shared SKILL.md format and are broadly compatible across runtimes. The following features are Claude Code-only and will not function in Codex: `ask_user_input_v0` calls (`ask-user`, `harness-codebase-design`), `/mnt/user-data/` file paths (`pdf-vision`, `explain-concept` memo export, `qwen-800m`), and the `plan-audit` bundled subagent (uses `.claude/agents/` and Claude Code's permission system). The `cc-agent-sdk-workflows` skill is inherently Claude-specific.
 
 ## Skills
 
