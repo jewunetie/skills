@@ -16,17 +16,17 @@ before your first use of the skill in a session.
 
 **Tier detection reasoning:** Single mechanism, one core idea, no sub-systems.
 
-**Anchor assessment:** User has software engineering background. Structural analogy
-available.
+**Anchor assessment:** User has a software engineering background. Structural analogy
+available from everyday interactions.
 
 **Research decision:** Stable, well-established concept. No research needed.
 
 ### Example output:
 
-You know how in your case management system, a paralegal might accidentally click
-"Submit Case" twice? Idempotency is the property that makes the second click a
-no-op -- the system recognizes the action already happened and returns the same
-result without creating a duplicate case.
+You know how clicking "Place Order" twice on a slow checkout page can accidentally
+create two orders? Idempotency is the property that prevents that -- the system
+recognizes the action already happened and returns the same result without creating
+a duplicate.
 
 More precisely, an operation is idempotent if performing it multiple times produces
 the same result as performing it once. HTTP PUT is idempotent (updating a record to
@@ -46,7 +46,7 @@ the inevitable network hiccups.
 
 **What to notice about this example:**
 
-- Anchor is drawn from the user's case management context (paralegal double-clicking)
+- Anchor is drawn from a universally relatable scenario (double-clicking checkout)
 - No decomposition -- the concept does not have multiple interacting parts
 - No checkpoint -- Quick Concept tier skips it
 - Compressed version arrives fast
@@ -60,8 +60,8 @@ the inevitable network hiccups.
 reward model, human feedback, PPO optimization). Understanding requires grasping
 relationships between parts.
 
-**Anchor assessment:** User has product management background. Product feedback loop
-is a strong structural analogy.
+**Anchor assessment:** User has a product background. A/B testing and iterative
+feedback loops are a strong structural analogy.
 
 **Research decision:** Structured tier. Core concepts are stable, but check if
 anything has shifted recently in the RLHF landscape. Light research warranted.
@@ -72,21 +72,20 @@ anything has shifted recently in the RLHF landscape. Light research warranted.
 > NOT present in the output -- the structure is felt through the flow of the
 > writing, not announced with headers.
 
-RLHF works like the feedback loop you run with your design partner jurisdictions.
-You build a version of the case management platform, put it in front of prosecutors
-and paralegals, collect their reactions (this workflow is confusing, this screen
-is exactly what I needed, this feels wrong but I cannot say why), and then use those
-reactions to guide the next iteration. The humans are not writing the code themselves
--- they are shaping the product through preferences.
+RLHF works like the feedback cycle you run when iterating on a product. You ship a
+version, put it in front of users, collect their reactions (this flow feels clunky,
+this feature is exactly right, something is off here but I cannot say what), and use
+those reactions to guide the next iteration. The users are not redesigning the product
+themselves -- they are shaping it through preferences.
 
 RLHF does the same thing for language models. The model generates outputs, humans
 rate which outputs they prefer, and the model is trained to produce more of what
 humans liked. The humans are not editing the model's weights -- they are shaping its
 behavior through preferences.
 
-This analogy breaks down in one important way: in your product work, the feedback is
-rich and contextual (a prosecutor explains *why* something does not work). In RLHF,
-the feedback is typically thin -- just a preference ranking between two outputs, with
+This analogy breaks down in one important way: user feedback on a product is usually
+rich and contextual (a user explains *why* something does not work). In RLHF, the
+feedback is typically thin -- just a preference ranking between two outputs, with
 no explanation attached.
 
 So why does RLHF exist? Language models trained on internet text learn to predict what
@@ -158,8 +157,8 @@ I can export a reference memo from this if you want to hold onto it.
 
 - No step labels in the output -- the flow from anchor to landscape to decomposition
   to checkpoint to compression is felt through the writing, not announced
-- Anchor maps the RLHF mechanism to the user's actual product feedback workflow, not
-  a generic metaphor
+- Anchor maps the RLHF mechanism to a general product feedback loop, not a persona-
+  specific context
 - Anchor names its limit (thin feedback vs rich contextual feedback)
 - Landscape answers why, what zones, and how it relates -- without explaining
   mechanisms yet
@@ -178,9 +177,8 @@ partition tolerance), competing schools of thought (CP vs AP systems), requires
 understanding distributed systems context to grasp why the theorem matters, and has
 practical implications that vary by use case. Expert would need more than 5 minutes.
 
-**Anchor assessment:** User builds case management software that multiple offices use.
-Distributed system trade-offs are directly relevant. Structural analogy available
-from their own product context.
+**Anchor assessment:** User is a software developer. A relatable multi-node data
+scenario makes the trade-off immediately tangible.
 
 **Research decision:** Deep Dive tier -- research first, non-negotiable. Check for
 recent critiques or refinements of CAP (e.g., Kleppmann's critiques, PACELC).
@@ -193,16 +191,15 @@ recent critiques or refinements of CAP (e.g., Kleppmann's critiques, PACELC).
 *[Research phase completed -- results inform the explanation below but the research
 process is not narrated to the user.]*
 
-Imagine your case management system is deployed across Arlington, Norfolk, and
-Portsmouth, and each office has a local copy of the case database. A prosecutor in
-Arlington updates a defendant's charge from felony to misdemeanor. At that exact
-moment, the network link to Norfolk goes down.
+Imagine your app's database is replicated across two data centers. A user updates
+their account email in data center A. At that exact moment, the network link between
+the two data centers goes down.
 
-Now you have a choice. Option A: Norfolk's system refuses to show any case data
+Now you have a choice. Option A: data center B refuses to serve any account data
 until the network recovers and it can sync the update. The data is always correct,
-but the office is locked out. Option B: Norfolk's system keeps working with its
-last-known data, and the prosecutor there might briefly see the old felony charge.
-The office stays productive, but the data is temporarily wrong.
+but users on that side are locked out. Option B: data center B keeps serving requests
+with its last-known data, and some users might briefly see the old email. The system
+stays up, but the data is temporarily wrong.
 
 That is the CAP theorem in one scenario. You cannot have both perfect consistency
 and continuous availability when network partitions happen. You have to choose which
@@ -238,11 +235,10 @@ Let me unpack each piece.
 
 **Consistency (C):** Every node in the system returns the same data at the same time.
 If a write succeeds on one node, all subsequent reads on any node reflect that write.
-This matters when correctness is non-negotiable -- financial transactions, case
-records where the charge has legal implications, anything where seeing stale data
-leads to bad decisions. The cost: to guarantee consistency during a partition, nodes
-that cannot verify they have the latest data must refuse to respond. The system
-becomes partially unavailable.
+This matters when correctness is non-negotiable -- financial transactions, inventory
+counts, anything where seeing stale data leads to bad decisions. The cost: to
+guarantee consistency during a partition, nodes that cannot verify they have the
+latest data must refuse to respond. The system becomes partially unavailable.
 
 **Availability (A):** Every request receives a non-error response. No node ever says
 "I cannot answer right now." This matters when uptime and responsiveness are more
@@ -302,8 +298,7 @@ If you want, I can pull this into a reference memo you can come back to.
 - No step labels in the output -- transitions between anchor, landscape, decomposition,
   checkpoint, and compression happen through natural writing flow
 - Research happened before the explanation began (not narrated)
-- Anchor uses the user's actual product scenario (multi-office case management) to
-  make CAP immediately tangible
+- Anchor uses a generic two-data-center scenario relatable to any developer
 - Anchor names two specific limits
 - Landscape gives the history (Brewer, Gilbert and Lynch) and the critical reframing
   (not "pick two" but "what do you sacrifice during failures") before any mechanism
@@ -314,15 +309,13 @@ If you want, I can pull this into a reference memo you can come back to.
   the core concept -- not forced, but relevant
 - Checkpoint targets the specific misconception most common with CAP
 - Compress is tight and actionable
-- The full explanation would warrant a memo if the user follows up with questions
 
 ---
 
 ## Export Memo Example
 
-If the user from the CAP theorem example asked "go deeper on how this applies to
-our case management architecture" and then requested a memo, the output file would
-look like this:
+If the user asked "go deeper on how this applies to our architecture" and then
+requested a memo, the output file would look like this:
 
 ```markdown
 # The CAP Theorem and Distributed System Trade-offs
@@ -333,18 +326,18 @@ happens during a partition: block requests to stay correct (CP) or keep serving
 potentially stale data to stay responsive (AP). Outside partitions, you can have both.
 
 ## Core Analogy
-Multi-office case management deployment: if Arlington updates a charge and the network
-to Norfolk goes down, the system must choose between locking Norfolk out (consistency)
-or letting Norfolk work with stale data (availability). Breaks down when: real CAP
-involves subtler gradations than this binary, and "partition" is more specific than
-"network down."
+Two data centers replicating account data: if data center A updates an email and the
+link to data center B goes down, the system must choose between locking B's users out
+(consistency) or letting them work with stale data (availability). Breaks down when:
+real CAP involves subtler gradations than this binary, and "partition" is more specific
+than "network down."
 
 ## Key Components
 
 ### Consistency
-Every node returns the same data at the same time. Critical for case records where
-charge status has legal implications. Cost: unavailability during partitions when
-nodes cannot verify they have the latest data.
+Every node returns the same data at the same time. Critical when stale data leads to
+bad decisions (financial transactions, inventory). Cost: unavailability during
+partitions when nodes cannot verify they have the latest data.
 
 ### Availability
 Every request gets a response, no timeouts. Important when uptime matters more than
@@ -359,24 +352,20 @@ During Partition: choose Availability or Consistency. Else: choose Latency or
 Consistency. Captures the full design space better than CAP alone.
 
 ## Examples
-- Arlington/Norfolk/Portsmouth case sync scenario (partition during charge update)
-- CP system behavior: Norfolk locks out until sync restores
-- AP system behavior: Norfolk serves stale charge, reconciles later
+- Two-data-center account sync scenario (partition during email update)
+- CP system behavior: data center B locks out until sync restores
+- AP system behavior: data center B serves stale email, reconciles later
 
 ## Nuances and Corrections
 - Initial framing of "pick two" was refined to "what do you sacrifice during
   partitions" -- the trade-off is conditional, not permanent
 - Clarified that "partition" means nodes unable to communicate with each other,
   not simply "network is down" -- the distinction matters for diagnosing real failures
-- For our case management system: case record consistency is likely non-negotiable
-  (CP for case data), but less critical subsystems like document search could tolerate
-  brief staleness (AP for search indexes)
 
 ## Open Questions
-- How does our current database replication strategy handle partition scenarios?
-- Should different data types in the case management system have different CAP
-  trade-off policies?
-- How does PACELC apply to our latency requirements for courthouse integrations?
+- Which data in our system requires CP behavior vs can tolerate AP?
+- How does our current replication strategy handle partition scenarios?
+- How does PACELC apply to our latency requirements?
 ```
 
 ---
@@ -388,4 +377,5 @@ Consistency. Captures the full design space better than CAP alone.
 - Preserves reasoning, not just facts
 - Nuances section captures what evolved during dialogue
 - Open questions give the user a clear path for future exploration
-- Specific to the user's context, not a generic CAP summary
+- Context-neutral -- the open questions are placeholders the user fills in, not
+  assumed specifics

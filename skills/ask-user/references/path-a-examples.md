@@ -176,18 +176,18 @@ Scenario: cleaning up meeting notes where some acronyms might not have known def
   </div>
   <div class="elicit-body">
     <div class="elicit-group">
-      <label class="elicit-question">What does "PbK" refer to in your notes?</label>
-      <div class="elicit-pills" data-name="pbk_meaning" data-multi="false">
-        <button type="button" class="elicit-pill" data-value="Karpel case management system">Karpel case management system</button>
-        <button type="button" class="elicit-pill" data-value="A different system">A different system</button>
+      <label class="elicit-question">What does "QBR" refer to in your notes?</label>
+      <div class="elicit-pills" data-name="qbr_meaning" data-multi="false">
+        <button type="button" class="elicit-pill" data-value="Quarterly Business Review">Quarterly Business Review</button>
+        <button type="button" class="elicit-pill" data-value="A different meaning">A different meaning</button>
         <button type="button" class="elicit-pill" data-value="Skip this question">Skip this question</button>
       </div>
     </div>
 
     <div class="elicit-group">
-      <label class="elicit-question">Should "trail and preliminary date" be corrected to "trial"?</label>
-      <div class="elicit-pills" data-name="trail_typo" data-multi="false">
-        <button type="button" class="elicit-pill" data-value="Yes, fix to trial">Yes, fix to trial</button>
+      <label class="elicit-question">Should "preform" be corrected to "perform"?</label>
+      <div class="elicit-pills" data-name="preform_typo" data-multi="false">
+        <button type="button" class="elicit-pill" data-value="Yes, fix to perform">Yes, fix to perform</button>
         <button type="button" class="elicit-pill" data-value="No, leave as is">No, leave as is</button>
         <button type="button" class="elicit-pill" data-value="Skip this question">Skip this question</button>
       </div>

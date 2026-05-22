@@ -77,17 +77,17 @@ First pass on cleanup questions.
 ```python
 ask_user_input_v0(questions=[
   {
-    "question": "Does 'PbK' refer to the Karpel case management system?",
-    "options": ["Yes, Karpel", "No, different system", "Skip this question"]
+    "question": "Does 'QBR' refer to Quarterly Business Review?",
+    "options": ["Yes, Quarterly Business Review", "No, different meaning", "Skip this question"]
   },
   {
-    "question": "Should 'trail and preliminary date' be corrected to 'trial'?",
-    "options": ["Yes, fix to trial", "No, leave as is", "Skip this question"]
+    "question": "Should 'preform' be corrected to 'perform'?",
+    "options": ["Yes, fix to perform", "No, leave as is", "Skip this question"]
   }
 ])
 ```
 
-After the user answers round 1, parse the response. If their answers surface a follow-up question (for example, "No, different system" warrants asking which system), make a second `ask_user_input_v0` call with round-2 questions. This is the Path B form of Extension 5 (multi-round elicitation).
+After the user answers round 1, parse the response. If their answers surface a follow-up question (for example, "No, different meaning" warrants asking what QBR actually stands for), make a second `ask_user_input_v0` call with round-2 questions. This is the Path B form of Extension 5 (multi-round elicitation).
 
 ## Example 4: When free text is essential, drop to Path C
 

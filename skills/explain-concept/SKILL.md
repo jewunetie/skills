@@ -78,9 +78,9 @@ Conversational with light formatting.
 or requires understanding historical context to grasp current state. Would take an
 expert more than 5 minutes to explain well.
 
-**Examples of topics at this tier:** the US federal court system, transformer
-architectures end-to-end, how prosecutors manage complex multi-defendant cases,
-distributed consensus algorithms, the AI alignment landscape.
+**Examples of topics at this tier:** transformer architectures end-to-end,
+the history and structure of the internet, distributed consensus algorithms,
+the AI alignment landscape, how modern compilers work.
 
 **Flow:** Research first (non-negotiable). All five steps at full depth. Pause after
 decomposition. Delivered conversationally with checkpoint.
@@ -99,12 +99,10 @@ Start with a concrete analogy or comparison that bridges from something the user
 already knows. The purpose is to make the new concept feel like a variation of
 something familiar, giving the user a scaffold to hang new information on.
 
-**Selecting the source domain:** Draw from whatever the user knows based on available
-context -- memory, conversation history, the domain they are currently working in.
-The user has deep familiarity with software engineering, product management, legal
-technology, case management workflows, and startup operations. But do not restrict
-to these -- if the user has demonstrated knowledge of a domain in conversation, it
-is fair game.
+**Selecting the source domain:** Draw from whatever the user has demonstrated
+familiarity with -- software engineering, product management, their industry, or any
+domain that has come up in conversation, memory, or context. Do not assume a fixed
+background; adapt to the user in front of you.
 
 **What makes a good anchor:**
 - It maps mechanisms, not surface resemblance. "RLHF works like a product feedback
@@ -299,9 +297,9 @@ reference what was already covered.
 - **Respect the tier.** Do not over-explain at Quick Concept. Resist the urge to be
   comprehensive when the user just needs a mental model. Do not under-explain at
   Deep Dive -- that tier exists because the topic genuinely requires depth.
-- **Match vocabulary to the user's domain.** If explaining a biology concept, use
-  engineering or product metaphors. If explaining an engineering concept in a legal
-  tech context, use legal workflow metaphors. Meet the user where they are.
+- **Match vocabulary to the user's domain.** Draw analogies from domains the user
+  has demonstrated knowledge of in the conversation. If no domain is apparent,
+  default to universally familiar scenarios. Meet the user where they are.
 - **The checkpoint is not a quiz.** It is an invitation to think out loud. Frame it
   as collaborative, not evaluative.
 - **Do not narrate the process.** Never say "I am going to start with an analogy" or

@@ -34,14 +34,14 @@ When a transcript is provided, scan for issues and present them to the user BEFO
 - Incorrect or swapped speaker names
 - Garbled words, sentence fragments, crosstalk
 - Misspelled proper nouns (people, organizations, software)
-- Incorrectly transcribed statute numbers, code references, or case numbers
+- Incorrectly transcribed technical terms, identifiers, reference numbers, or domain-specific terminology
 - Phrases that appear to be transcription artifacts rather than meaningful content
 
 Present as a numbered list with the problematic text, location (timestamp or line), and a suggested correction or question. Example:
 
 ```
 Transcription issues found:
-1. [00:12:40] "null prossed" - likely "nolle prossed" (nolle prosequi). Confirm?
+1. [00:12:40] "rest full" - likely "RESTful" (garbled technical term). Confirm?
 2. [00:37:40] "Hello there" / "I miss" from Speaker B - appears to be crosstalk, not content. Remove?
 3. [throughout] Transcript labels Speaker A as "Dan" but user notes indicate this is Grace (shared laptop). Correct all to Grace?
 ```
